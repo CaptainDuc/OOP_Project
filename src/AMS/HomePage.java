@@ -4,120 +4,103 @@ import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
 import java.sql.*;
+
 public class HomePage extends JFrame implements ActionListener{
-    private String currentUsername;
-    Font f,f1,f2;
-    JLabel l1,l2;
     
+    private final Font F_MENU = new Font("Arial", Font.BOLD, 16);
+    private final Font F_ITEM = new Font("Arial", Font.PLAIN, 14);
+    private final Font F_WELCOME = new Font("Arial", Font.BOLD, 48);
+    private final Color BG_MENU = new Color(4, 1, 54);
+    private final Color FG_MENU = Color.WHITE;
+    private final Color FG_ACCENT = new Color(255, 193, 7);
+
+    private String currentUsername;
     
     HomePage(String username){
-        super("Airlines VN Home Page");
+        super("Hệ thống Hàng không Việt Nam (Airlines VN)");
+        this.currentUsername = username;
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
+        
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLocation(0,0);
-        setSize(1550,800);
-        f =new Font ("Arial",Font.BOLD,20);
-        f2 =new Font ("Time New Roman",Font.BOLD,35);
-        f1 =new Font ("Gadugi",Font.BOLD,18);
-          
-        ImageIcon img = new ImageIcon(ClassLoader.getSystemResource(""));
-        Image img1 = img.getImage().getScaledInstance(620, 470, Image.SCALE_SMOOTH);
-        ImageIcon ic1 = new ImageIcon(img1);
-        l1 = new JLabel(ic1); 
-          
-        JMenuBar m1 = new JMenuBar();  
-        JMenu me1 = new JMenu("Passenger Profile");
-        JMenuItem mi1 = new JMenuItem("Add Passenger Profile");
-        JMenuItem mi2 = new JMenuItem("View Passenger Profile");
+        setLayout(new BorderLayout()); 
+        getContentPane().setBackground(Color.WHITE);
+
+        JLabel lWelcome = new JLabel("Chào mừng, " + username + "! Chúc bạn có một ngày mới tuyệt vời!.", SwingConstants.CENTER);
+        lWelcome.setFont(F_WELCOME);
+        lWelcome.setForeground(BG_MENU); 
+        
+        JPanel pCenter = new JPanel(new GridBagLayout());
+        pCenter.setBackground(Color.WHITE);
+        pCenter.add(lWelcome);
+        add(pCenter, BorderLayout.CENTER);
+
+        JMenuBar m1 = new JMenuBar();
+        m1.setBackground(BG_MENU);
+        
+        JMenu me1 = new JMenu("Hồ sơ Hành khách");
+        JMenuItem mi1 = new JMenuItem("Thêm Hồ sơ");
+        JMenuItem mi2 = new JMenuItem("Xem Hồ sơ");
         me1.add(mi1);
         me1.add(mi2);
-        m1.add(me1);
-        JMenu me2 = new JMenu("Manager Passenger");
-        JMenuItem mi3 = new JMenuItem("Update Passenger Profile");
+        
+        JMenu me2 = new JMenu("Quản lý Hành khách");
+        JMenuItem mi3 = new JMenuItem("Cập nhật Hồ sơ");
         me2.add(mi3);
-        m1.add(me2);
-        JMenu me3 = new JMenu("Your Flight");
-        JMenuItem mi5 = new JMenuItem("Book Flight");
-        JMenuItem mi6 = new JMenuItem("View Booked Flight");
+        
+        JMenu me3 = new JMenu("Chuyến bay của bạn");
+        JMenuItem mi5 = new JMenuItem("Đặt vé máy bay");
+        JMenuItem mi6 = new JMenuItem("Xem vé đã đặt");
         me3.add(mi5);
         me3.add(mi6);
-        m1.add(me3);
-         JMenu me4 = new JMenu("Flight Details");
-        JMenuItem mi7 = new JMenuItem("Journey Details");
-        JMenuItem mi8 = new JMenuItem("Flight Zone");
+        
+        JMenu me4 = new JMenu("Chi tiết Chuyến bay");
+        JMenuItem mi7 = new JMenuItem("Chi tiết Hành trình");
+        JMenuItem mi8 = new JMenuItem("Khu vực Bay (Flight Zone)");
         me4.add(mi7);
         me4.add(mi8);
-        m1.add(me4);
-         JMenu me5 = new JMenu("Cancellation");
-        JMenuItem mi9 = new JMenuItem("Cancel Ticket");
-        JMenuItem mi10 = new JMenuItem("View Cancelled Ticket");
+        
+        JMenu me5 = new JMenu("Hủy vé");
+        JMenuItem mi9 = new JMenuItem("Hủy vé máy bay");
+        JMenuItem mi10 = new JMenuItem("Xem vé đã hủy");
         me5.add(mi9);
         me5.add(mi10);
-        m1.add(me5);
-        JMenu me6 = new JMenu("Bill");
-        JMenuItem mi11 = new JMenuItem("Check Payment");
+        
+        JMenu me6 = new JMenu("Thanh toán");
+        JMenuItem mi11 = new JMenuItem("Kiểm tra Thanh toán");
         me6.add(mi11);
-        m1.add(me6);
-        JMenu me8 = new JMenu("Logout");
-        JMenuItem mi14 = new JMenuItem("Exit");
+        
+        JMenu me8 = new JMenu("Thoát/Đăng xuất");
+        JMenuItem mi14 = new JMenuItem("Thoát chương trình");
         me8.add(mi14);
+        
+        m1.add(me1);
+        m1.add(me2);
+        m1.add(me3);
+        m1.add(me4);
+        m1.add(me5);
+        m1.add(me6);
         m1.add(me8);
         
-        me1.setFont(f);
-        me2.setFont(f);
-        me3.setFont(f);
-        me4.setFont(f);
-        me5.setFont(f);
-        me6.setFont(f);
-        me8.setFont(f);
+        JMenu[] menus = {me1, me2, me3, me4, me5, me6, me8};
+        for (JMenu menu : menus) {
+            menu.setFont(F_MENU);
+            menu.setForeground(FG_MENU);
+        }
         
-        mi1.setFont(f1);
-        mi2.setFont(f1);
-        mi3.setFont(f1);
-       
-        mi5.setFont(f1);
-        mi6.setFont(f1);
-        mi7.setFont(f1);
-        mi8.setFont(f1);
-        mi9.setFont(f1);
-        mi10.setFont(f1);
-        mi11.setFont(f1);
-        mi14.setFont(f1);
+        JMenuItem[] items = {mi1, mi2, mi3, mi5, mi6, mi7, mi8, mi9, mi10, mi11, mi14};
+        for (JMenuItem item : items) {
+            item.setFont(F_ITEM);
+            item.setBackground(BG_MENU); 
+            item.setForeground(FG_ACCENT); 
+        }
+
+        me8.setForeground(Color.RED); 
+        mi14.setForeground(Color.RED);
         
-        m1.setBackground(new java.awt.Color(4,1,54));
-        
-        me1.setForeground(Color.GRAY);
-        me2.setForeground(Color.GRAY);
-        me3.setForeground(Color.GRAY);
-        me4.setForeground(Color.GRAY);
-        me5.setForeground(Color.GRAY);
-        me6.setForeground(Color.GRAY);
-        me8.setForeground(Color.RED);
-        
-        
-       mi1.setBackground(Color.BLACK);
-       mi2.setBackground(Color.BLACK);
-       mi3.setBackground(Color.BLACK);
-       mi5.setBackground(Color.BLACK);
-       mi6.setBackground(Color.BLACK);
-       mi7.setBackground(Color.BLACK);
-       mi8.setBackground(Color.BLACK);
-       mi9.setBackground(Color.BLACK);
-       mi10.setBackground(Color.BLACK);
-       mi11.setBackground(Color.BLACK);
-       mi14.setBackground(Color.BLACK);
-       
-       mi1.setForeground(Color.YELLOW);
-       mi2.setForeground(Color.YELLOW);
-       mi3.setForeground(Color.YELLOW);
-       mi5.setForeground(Color.YELLOW);
-       mi6.setForeground(Color.YELLOW);
-       mi7.setForeground(Color.YELLOW);
-       mi8.setForeground(Color.YELLOW);
-       mi9.setForeground(Color.YELLOW);
-       mi10.setForeground(Color.YELLOW);
-       mi11.setForeground(Color.YELLOW);
-       mi14.setForeground(Color.YELLOW);
-        
-    
+        setJMenuBar(m1);
+
         mi1.addActionListener(this);
         mi2.addActionListener(this);
         mi3.addActionListener(this);
@@ -129,52 +112,50 @@ public class HomePage extends JFrame implements ActionListener{
         mi10.addActionListener(this);
         mi11.addActionListener(this);
         mi14.addActionListener(this);
-        
-        this.currentUsername = username;
-        
-        
-        setJMenuBar(m1);
-        add(l1);
-        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
-         
     }
+
     public void actionPerformed(ActionEvent e){
         String cmd =e.getActionCommand();
-        if (cmd.equals("Add Passenger Profile")){
-            new AddPassengerDetails();
+        
+        if (cmd.equals("Thêm Hồ sơ")){
+             new AddPassengerDetails();
         }
-        else if(cmd.equals("View Passenger Profile")){
-            new ViewPassenger().setVisible(true);
+        else if(cmd.equals("Xem Hồ sơ")){
+             new ViewPassenger().setVisible(true);
         }
-        else if(cmd.equals("Update Passenger Profile")){
-            new UpdatePassenger().setVisible(true);
+        else if(cmd.equals("Cập nhật Hồ sơ")){
+             new UpdatePassenger().setVisible(true);
         }
-        else if(cmd.equals("Book Flight")){
-            new BookFlight(currentUsername).setVisible(true);
+        else if(cmd.equals("Đặt vé máy bay")){
+             new BookFlight(currentUsername).setVisible(true);
         }
-        else if(cmd.equals("View Booked Flight")){
-            new ViewBookedFlight(currentUsername).setVisible(true);
+        else if(cmd.equals("Xem vé đã đặt")){
+             new ViewBookedFlight(currentUsername).setVisible(true);
         }
-        else if(cmd.equals("Journey Details")){
-            new FlightJourney().setVisible(true);
+        else if(cmd.equals("Chi tiết Hành trình")){
+             new FlightJourney();
         }
-        else if(cmd.equals("Flight Zone")){
-            new FlightZone().setVisible(true);
+        else if(cmd.equals("Khu vực Bay (Flight Zone)")){
+             new FlightZone().setVisible(true);
         }
-        else if(cmd.equals("Cancel Ticket")){
-            new CancelTicket(currentUsername).setVisible(true);
+        else if(cmd.equals("Hủy vé máy bay")){
+             new CancelTicket(currentUsername).setVisible(true);
         }
-        else if(cmd.equals("View Cancelled Ticket")){
-            new ViewCancelTicket(currentUsername).setVisible(true);
+        else if(cmd.equals("Xem vé đã hủy")){
+             new ViewCancelTicket(currentUsername).setVisible(true);
         }
-        else if(cmd.equals("Check Payment")){
-            new CheckPaymentDetails().setVisible(true);
+        else if(cmd.equals("Kiểm tra Thanh toán")){
+             new CheckPaymentDetails().setVisible(true);
         }
-        else if(cmd.equals("Exit")){
-            System.exit(0);
+        else if(cmd.equals("Thoát chương trình")){
+            int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn thoát khỏi ứng dụng?", "Xác nhận Thoát", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                System.exit(0);
+            }
         }
     }
-//    public static void main(String[]args){
-//        new HomePage(UserEx).setVisible(true);
-//    }
+    
+    public static void main(String[]args){
+        SwingUtilities.invokeLater(() -> new HomePage("UserEx").setVisible(true));
+    }
 }

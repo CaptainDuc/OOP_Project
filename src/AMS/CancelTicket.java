@@ -7,10 +7,11 @@ import java.sql.*;
 import java.util.*;
 
 public class CancelTicket extends JFrame implements ActionListener {
-    JLabel l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, l11, l12, l13, l14;
+    
+    JLabel l1, l12;
+    JTextField tf1, tf2, tf3, tf4, tf5, tf6, tf7, tf8, tf9, tf10, tf11;
     JButton bt1, bt2;
     JPanel p1, p2, p3;
-    JTextField tf1, tf2, tf3, tf4, tf5, tf6, tf7, tf8, tf9, tf10, tf11;
     Font f, f1;
     Choice c1;
     String currentUsername;
@@ -19,14 +20,21 @@ public class CancelTicket extends JFrame implements ActionListener {
     private static final String DB_PASS = "123456";
 
     public CancelTicket(String username) {
-        super("Cancel airlines flight");
+        super("Hủy Vé Chuyến Bay");
         this.currentUsername = username;
-        setLocation(50, 10);
-        setSize(1100, 650);
-        f = new Font("Arial", Font.BOLD, 25);
-        f1 = new Font("Arial", Font.BOLD, 18);
+        
+        setSize(1100, 650); 
+        setLocationRelativeTo(null); 
+        
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
+        
+        f = new Font("Arial", Font.BOLD, 28);
+        f1 = new Font("Arial", Font.PLAIN, 16);
+        Font f_label = new Font("Arial", Font.BOLD, 16);
+        Color ACCENT_COLOR = new Color(176, 4, 21);
 
         c1 = new Choice();
+        c1.setFont(f1);
 
         ConnectionClass o = null;
         ResultSet r = null;
@@ -44,184 +52,147 @@ public class CancelTicket extends JFrame implements ActionListener {
             pst.close();
         } catch (Exception e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Lỗi tải danh sách vé: " + e.getMessage(), "Lỗi CSDL", JOptionPane.ERROR_MESSAGE);
         } finally {
             closeResources(r, o);
         }
 
-        l1 = new JLabel("Cancel your flight ticket");
-        l2 = new JLabel("Ticket ID");
-        l3 = new JLabel("Source");
-        l4 = new JLabel("Destination");
-        l5 = new JLabel("Class");
-        l6 = new JLabel("Price");
-        l7 = new JLabel("Flight Code");
-        l8 = new JLabel("Flight Name");
-        l9 = new JLabel("Journey Date");
-        l10 = new JLabel("Journey Time");
-        l11 = new JLabel("Username");
-        l13 = new JLabel("Name");
-        l14 = new JLabel("Reason");
+        l1 = new JLabel("HỦY VÉ MÁY BAY ĐÃ ĐẶT");
+        l1.setHorizontalAlignment(JLabel.CENTER);
+        l1.setForeground(ACCENT_COLOR);
+        l1.setFont(f);
 
-        tf1 = new JTextField();
-        tf2 = new JTextField();
-        tf3 = new JTextField();
-        tf4 = new JTextField();
-        tf5 = new JTextField();
-        tf6 = new JTextField();
-        tf7 = new JTextField();
-        tf8 = new JTextField();
-        tf9 = new JTextField();
-        tf10 = new JTextField();
-        tf11 = new JTextField();
+        p1 = new JPanel();
+        p1.setLayout(new FlowLayout(FlowLayout.CENTER));
+        p1.setBackground(new Color(240, 240, 240));
+        p1.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        p1.add(l1);
 
-        tf1.setEditable(false);
-        tf2.setEditable(false);
-        tf3.setEditable(false);
-        tf4.setEditable(false);
-        tf5.setEditable(false);
-        tf6.setEditable(false);
-        tf7.setEditable(false);
-        tf8.setEditable(false);
-        tf9.setEditable(false);
-        tf10.setEditable(false);
+        p2 = new JPanel();
+        p2.setLayout(new GridLayout(13, 2, 10, 15)); 
+        p2.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
+        p2.setBackground(Color.WHITE);
 
-        bt1 = new JButton("Cancel Flight");
-        bt2 = new JButton("Back");
+        String[] labels = {"Mã Vé (Ticket ID)", "Điểm Đi (Source)", "Điểm Đến (Destination)", "Hạng Vé (Class)", 
+                           "Giá (Price)", "Mã Chuyến Bay", "Tên Hãng Bay", "Ngày Đi", 
+                           "Giờ Đi", "Username", "Họ Tên Khách", "Lý Do Hủy"};
+                           
+        JTextField[] textFields = {tf1, tf2, tf3, tf4, tf5, tf6, tf7, tf8, tf9, tf10, tf11};
+        
+        for (int k = 0; k < textFields.length; k++) {
+            textFields[k] = new JTextField();
+            textFields[k].setFont(f1);
+            if (k < 10) { 
+                textFields[k].setEditable(false);
+                textFields[k].setBackground(new Color(245, 245, 245));
+            } else {
+                textFields[k].setBorder(BorderFactory.createLineBorder(Color.GRAY));
+            }
+        }
+        
+        tf1 = textFields[0]; tf2 = textFields[1]; tf3 = textFields[2]; tf4 = textFields[3]; 
+        tf5 = textFields[4]; tf6 = textFields[5]; tf7 = textFields[6]; tf8 = textFields[7]; 
+        tf9 = textFields[8]; tf10 = textFields[9]; tf11 = textFields[10];
+
+        p2.add(createLabel(labels[0], f_label, new Color(20, 2, 117)));
+        p2.add(c1);
+        
+        for (int k = 1; k < 11; k++) {
+            p2.add(createLabel(labels[k], f_label, new Color(20, 2, 117)));
+            p2.add(textFields[k - 1]);
+        }
+        
+        p2.add(createLabel(labels[11], f_label, new Color(20, 2, 117)));
+        p2.add(tf11);
+
+        bt1 = new JButton("HỦY VÉ");
+        bt2 = new JButton("QUAY LẠI");
+
+        bt1.setFont(f_label);
+        bt2.setFont(f_label);
+        bt1.setBackground(ACCENT_COLOR);
+        bt2.setBackground(new Color(50, 50, 50)); 
+        bt1.setForeground(Color.WHITE);
+        bt2.setForeground(Color.WHITE);
 
         bt1.addActionListener(this);
         bt2.addActionListener(this);
 
-        l1.setHorizontalAlignment(JLabel.CENTER);
-        l1.setForeground(new java.awt.Color(176, 4, 21));
-        l1.setFont(f);
-        l2.setFont(f1);
-        l3.setFont(f1);
-        l4.setFont(f1);
-        l5.setFont(f1);
-        l6.setFont(f1);
-        l7.setFont(f1);
-        l8.setFont(f1);
-        l9.setFont(f1);
-        l10.setFont(f1);
-        l11.setFont(f1);
-        l13.setFont(f1);
-        l14.setFont(f1);
-
-        tf1.setFont(f1);
-        tf2.setFont(f1);
-        tf3.setFont(f1);
-        tf4.setFont(f1);
-        tf5.setFont(f1);
-        tf6.setFont(f1);
-        tf7.setFont(f1);
-        tf8.setFont(f1);
-        tf9.setFont(f1);
-        tf10.setFont(f1);
-        tf11.setFont(f1);
-
-        bt1.setFont(f1);
-        bt2.setFont(f1);
-
-        l2.setForeground(new java.awt.Color(20, 2, 117));
-        l3.setForeground(new java.awt.Color(20, 2, 117));
-        l4.setForeground(new java.awt.Color(20, 2, 117));
-        l5.setForeground(new java.awt.Color(20, 2, 117));
-        l6.setForeground(new java.awt.Color(20, 2, 117));
-        l7.setForeground(new java.awt.Color(20, 2, 117));
-        l8.setForeground(new java.awt.Color(20, 2, 117));
-        l9.setForeground(new java.awt.Color(20, 2, 117));
-        l10.setForeground(new java.awt.Color(20, 2, 117));
-        l11.setForeground(new java.awt.Color(20, 2, 117));
-        l13.setForeground(new java.awt.Color(20, 2, 117));
-        l14.setForeground(new java.awt.Color(20, 2, 120));
-
-        bt1.setBackground(new java.awt.Color(176, 4, 21));
-        bt2.setBackground(Color.BLACK);
-
-        bt1.setForeground(Color.WHITE);
-        bt2.setForeground(new java.awt.Color(230, 225, 225));
-
-        p1 = new JPanel();
-        p1.setLayout(new GridLayout(1, 1, 10, 10));
-        p1.add(l1);
-
-        p2 = new JPanel();
-        p2.setLayout(new GridLayout(13, 2, 10, 10));
-        p2.add(l2);
-        p2.add(c1);
-        p2.add(l3);
-        p2.add(tf1);
-        p2.add(l4);
-        p2.add(tf2);
-        p2.add(l5);
-        p2.add(tf3);
-        p2.add(l6);
-        p2.add(tf4);
-        p2.add(l7);
-        p2.add(tf5);
-        p2.add(l8);
-        p2.add(tf6);
-        p2.add(l9);
-        p2.add(tf7);
-        p2.add(l10);
-        p2.add(tf8);
-        p2.add(l11);
-        p2.add(tf9);
-        p2.add(l13);
-        p2.add(tf10);
-        p2.add(l14);
-        p2.add(tf11);
         p2.add(bt1);
         p2.add(bt2);
 
         p3 = new JPanel();
-        p3.setLayout(new GridLayout(1, 1, 10, 10));
+        p3.setLayout(new BorderLayout());
+        p3.setBackground(Color.WHITE);
 
-        ImageIcon img = new ImageIcon(ClassLoader.getSystemResource(""));
-        Image img1 = img.getImage().getScaledInstance(600, 350, Image.SCALE_SMOOTH);
-        ImageIcon ic1 = new ImageIcon(img1);
-        l12 = new JLabel(ic1);
-        p3.add(l12);
+        try {
+            ImageIcon img = new ImageIcon(ClassLoader.getSystemResource(""));
+            Image img1 = img.getImage().getScaledInstance(400, 500, Image.SCALE_SMOOTH);
+            ImageIcon ic1 = new ImageIcon(img1);
+            l12 = new JLabel(ic1);
+        } catch (Exception ex) {
+            l12 = new JLabel("<html><div style='text-align: center;'>[Chỗ đặt Hình Ảnh]<br>Vé máy bay</div></html>", SwingConstants.CENTER);
+            l12.setFont(new Font("Arial", Font.ITALIC, 14));
+            l12.setPreferredSize(new Dimension(400, 500));
+        }
+        p3.add(l12, BorderLayout.CENTER);
 
-        setLayout(new BorderLayout(10, 10));
-        add(p1, "North");
-        add(p2, "Center");
-        add(p3, "West");
-
+        // ----------------- 5. Final Assembly -----------------
+        setLayout(new BorderLayout(15, 15));
+        add(p1, BorderLayout.NORTH);
+        add(p2, BorderLayout.CENTER);
+        add(p3, BorderLayout.WEST); 
+        
+        // ----------------- 6. Mouse Listener cho Choice (c1) -----------------
         c1.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent arg0) {
-                ConnectionClass o = null;
-                PreparedStatement pst = null;
-                ResultSet rs = null;
-                try {
-                    o = new ConnectionClass(DB_USER, DB_PASS);
-                    String tid = c1.getSelectedItem();
-                    
-                    String q = "SELECT * FROM bookedflight WHERE tid = ?";
-                    pst = o.con.prepareStatement(q);
-                    pst.setString(1, tid);
-                    rs = pst.executeQuery();
-                    
-                    if (rs.next()) {
-                        tf1.setText(rs.getString("sourcee"));
-                        tf2.setText(rs.getString("destination"));
-                        tf3.setText(rs.getString("classname"));
-                        tf4.setText(rs.getString("price"));
-                        tf5.setText(rs.getString("fcode"));
-                        tf6.setText(rs.getString("fname"));
-                        tf7.setText(rs.getString("journey_date"));
-                        tf8.setText(rs.getString("journey_time"));
-                        tf9.setText(rs.getString("username"));
-                        tf10.setText(rs.getString("namee"));
-                    }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                } finally {
-                    closeResources(rs, o, pst);
-                }
+                fillTicketDetails();
             }
         });
+        
+        if (c1.getItemCount() > 0) {
+            fillTicketDetails();
+        }
+    }
+    
+    private JLabel createLabel(String text, Font font, Color color) {
+        JLabel label = new JLabel(text);
+        label.setFont(font);
+        label.setForeground(color);
+        return label;
+    }
+    
+    private void fillTicketDetails() {
+        ConnectionClass o = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        try {
+            o = new ConnectionClass(DB_USER, DB_PASS);
+            String tid = c1.getSelectedItem();
+            
+            String q = "SELECT * FROM bookedflight WHERE tid = ?";
+            pst = o.con.prepareStatement(q);
+            pst.setString(1, tid);
+            rs = pst.executeQuery();
+            
+            if (rs.next()) {
+                tf1.setText(rs.getString("sourcee"));
+                tf2.setText(rs.getString("destination"));
+                tf3.setText(rs.getString("classname"));
+                tf4.setText(rs.getString("price"));
+                tf5.setText(rs.getString("fcode"));
+                tf6.setText(rs.getString("fname"));
+                tf7.setText(rs.getString("journey_date"));
+                tf8.setText(rs.getString("journey_time"));
+                tf9.setText(rs.getString("username"));
+                tf10.setText(rs.getString("namee"));
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            closeResources(rs, o, pst);
+        }
     }
 
     private void closeResources(ResultSet rs, ConnectionClass obj) {
@@ -249,6 +220,17 @@ public class CancelTicket extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == bt1) {
             String tid = c1.getSelectedItem();
+            String reason = tf11.getText();
+
+            if (tid == null || tid.isEmpty() || reason.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Vui lòng chọn mã vé và nhập lý do hủy.", "Lỗi", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            ConnectionClass o = null;
+            PreparedStatement pst1 = null;
+            PreparedStatement pst2 = null;
+            
             String sourcee = tf1.getText();
             String destination = tf2.getText();
             String username = tf9.getText();
@@ -259,19 +241,11 @@ public class CancelTicket extends JFrame implements ActionListener {
             String journey_date = tf7.getText();
             String journey_time = tf8.getText();
             String namee = tf10.getText();
-            String reason = tf11.getText();
 
-            if (tid == null || tid.isEmpty() || reason.trim().isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Vui lòng chọn Ticket ID và nhập lý do hủy.", "Lỗi", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            ConnectionClass o = null;
-            PreparedStatement pst1 = null;
-            PreparedStatement pst2 = null;
             try {
                 o = new ConnectionClass(DB_USER, DB_PASS);
-                
+                o.con.setAutoCommit(false);
+
                 String q1 = "INSERT INTO cancelFlight (tid, sourcee, destination, classname, price, fcode, fname, journey_date, journey_time, username, namee, reason) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 pst1 = o.con.prepareStatement(q1);
                 pst1.setString(1, tid);
@@ -287,9 +261,9 @@ public class CancelTicket extends JFrame implements ActionListener {
                 pst1.setString(11, namee);
                 pst1.setString(12, reason);
                 
-                int aa = pst1.executeUpdate();
+                int insertCount = pst1.executeUpdate();
                 
-                if (aa == 1) {
+                if (insertCount == 1) {
                     String q2 = "DELETE FROM bookedFlight WHERE tid = ?";
                     pst2 = o.con.prepareStatement(q2);
                     pst2.setString(1, tid);
@@ -297,18 +271,30 @@ public class CancelTicket extends JFrame implements ActionListener {
                     int deletedRows = pst2.executeUpdate();
                     
                     if (deletedRows == 1) {
-                        JOptionPane.showMessageDialog(null, "Đã hủy vé thành công!");
+                        o.con.commit();
+                        JOptionPane.showMessageDialog(null, "Đã hủy vé thành công. Vui lòng kiểm tra email để biết chi tiết hoàn tiền.", "Thành Công", JOptionPane.INFORMATION_MESSAGE);
+                        
                         this.dispose(); 
                         new CancelTicket(currentUsername).setVisible(true); 
                     } else {
-                        JOptionPane.showMessageDialog(null, "Hủy vé thất bại: Không thể xóa thông tin đặt vé.", "Lỗi CSDL", JOptionPane.ERROR_MESSAGE);
+                        o.con.rollback();
+                        JOptionPane.showMessageDialog(null, "Hủy vé thất bại: Không thể xóa thông tin đặt vé. Giao dịch đã bị hoàn tác.", "Lỗi CSDL", JOptionPane.ERROR_MESSAGE);
                     }
                 } else {
-                    JOptionPane.showMessageDialog(null, "Hủy vé thất bại: Không thể lưu trữ chi tiết đặt vé.", "Lỗi CSDL", JOptionPane.ERROR_MESSAGE);
+                    o.con.rollback();
+                    JOptionPane.showMessageDialog(null, "Hủy vé thất bại: Không thể lưu trữ chi tiết hủy vé. Giao dịch đã bị hoàn tác.", "Lỗi CSDL", JOptionPane.ERROR_MESSAGE);
                 }
+            } catch (SQLException ex) {
+                try {
+                    if (o != null && o.con != null) o.con.rollback();
+                } catch (SQLException rollbackEx) {
+                    rollbackEx.printStackTrace();
+                }
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi trong quá trình hủy (SQL): " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
             } catch (Exception ex) {
                 ex.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi trong quá trình hủy: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi không xác định trong quá trình hủy: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
             } finally {
                 try {
                     if (pst1 != null) pst1.close();
@@ -319,12 +305,13 @@ public class CancelTicket extends JFrame implements ActionListener {
                 }
             }
         }
-         if (e.getSource() == bt2) {
-            this.setVisible(false);
+        
+        if (e.getSource() == bt2) {
+            this.dispose();
         }
     }
 
-//    public static void main(String[] args) {
-//        new CancelTicket("UserEx").setVisible(true);
-//    }
+    public static void main(String[] args) {
+        new CancelTicket("UserEx").setVisible(true);
+    }
 }

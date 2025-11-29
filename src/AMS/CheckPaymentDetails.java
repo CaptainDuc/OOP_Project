@@ -7,10 +7,10 @@ import java.sql.*;
 import net.proteanit.sql.DbUtils;
 
 public class CheckPaymentDetails extends JFrame {
+    
     JTextField textField;
     JTable table;
     JLabel sector;
-    JLabel FlightCode, Capacity, Classname, Classcode, label;
     
     private static final String DB_USER = "sa"; 
     private static final String DB_PASS = "123456"; 
@@ -20,82 +20,66 @@ public class CheckPaymentDetails extends JFrame {
     }
 
     private void initialize() {
-        setTitle("Payment Details");
+        setTitle("Chi Tiết Thanh Toán");
         getContentPane().setBackground(Color.WHITE);
-        setSize(960, 590);
-        setLocation(40, 20);
-        setLayout(null);
-
+        setSize(960, 500);
+        setLocationRelativeTo(null);
         
-        JLabel Fcode = new JLabel("Username");
-        Fcode.setFont(new Font("Arial", Font.BOLD, 16));
-        Fcode.setBounds(190, 160, 150, 26);
-        add(Fcode);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
+        
+        setLayout(new BorderLayout(10, 10)); 
 
-        textField = new JTextField();
-        textField.setBounds(300, 160, 150, 26);
-        textField.setFont(new Font("Arial", Font.BOLD, 14));
-        add(textField);
+        sector = new JLabel("KIỂM TRA CHI TIẾT THANH TOÁN");
+        sector.setForeground(new Color(0, 0, 139));
+        sector.setFont(new Font("Arial", Font.BOLD, 30));
+        sector.setHorizontalAlignment(SwingConstants.CENTER);
+        
+        JPanel headerPanel = new JPanel();
+        headerPanel.setBackground(Color.WHITE);
+        headerPanel.add(sector);
+        add(headerPanel, BorderLayout.NORTH);
+
+        JPanel contentPanel = new JPanel(new BorderLayout(10, 10));
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(15, 30, 15, 30));
+        contentPanel.setBackground(Color.WHITE);
+
+        JPanel inputPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10)); 
+        inputPanel.setBackground(Color.WHITE);
+        
+        JLabel Fcode = new JLabel("Nhập Username:"); 
+        Fcode.setFont(new Font("Arial", Font.BOLD, 16));
+        Fcode.setForeground(new Color(103, 3, 173));
+        
+        textField = new JTextField(15); 
+        textField.setFont(new Font("Arial", Font.PLAIN, 14));
+        
+        JButton Show = new JButton("HIỂN THỊ"); 
+        Show.setFont(new Font("Arial", Font.BOLD, 14));
+        Show.setBackground(new Color(230, 2, 10));
+        Show.setForeground(Color.WHITE);
+
+        inputPanel.add(Fcode);
+        inputPanel.add(textField);
+        inputPanel.add(Show);
+        
+        contentPanel.add(inputPanel, BorderLayout.NORTH);
 
         table = new JTable();
-        JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBounds(93, 297, 766, 87);
-        add(scrollPane);
-
-        JButton Show = new JButton("Show");
-        Show.setFont(new Font("Arial", Font.BOLD, 14));
-        Show.setBackground(Color.BLACK);
-        Show.setForeground(Color.WHITE);
-        Show.setBounds(500, 160, 150, 26);
-        add(Show);
-
-        sector = new JLabel("Check Payment Details");
-        sector.setForeground(Color.BLUE);
-        sector.setFont(new Font("Arial", Font.BOLD, 33));
-        sector.setBounds(291, 17, 800, 39);
-        add(sector);
-
-        FlightCode = new JLabel("Ticket ID");
-        FlightCode.setFont(new Font("Arial", Font.BOLD, 14));
-        FlightCode.setBounds(117, 262, 108, 26);
-        add(FlightCode);
-
-        Capacity = new JLabel("Price");
-        Capacity.setFont(new Font("Arial", Font.BOLD, 14));
-        Capacity.setBounds(237, 268, 38, 14);
-        add(Capacity);
-
-        Classcode = new JLabel("Journey Date");
-        Classcode.setFont(new Font("Arial", Font.BOLD, 14));
-        Classcode.setBounds(362, 264, 101, 24);
-        add(Classcode);
-
-        Classname = new JLabel("Journey Time");
-        Classname.setFont(new Font("Arial", Font.BOLD, 14));
-        Classname.setBounds(485, 268, 110, 14);
-        add(Classname);
-
-        JLabel card = new JLabel("Username");
-        card.setFont(new Font("Arial", Font.BOLD, 14));
-        card.setBounds(620, 269, 101, 19);
-        add(card);
-
-        JLabel phone = new JLabel("Status");
-        phone.setFont(new Font("Arial", Font.BOLD, 14));
-        phone.setBounds(752, 264, 86, 24);
-        add(phone);
-
-        label = new JLabel("");
-        ImageIcon img = new ImageIcon(ClassLoader.getSystemResource(""));
-        Image img1 = img.getImage().getScaledInstance(960, 590, Image.SCALE_SMOOTH);
-        ImageIcon ic1 = new ImageIcon(img1);
-        label.setIcon(ic1);
-        label.setBounds(0, 0, 960, 590);
-        add(label);
+        table.setFont(new Font("Arial", Font.PLAIN, 14));
+        table.setRowHeight(25);
+        table.getTableHeader().setFont(new Font("Arial", Font.BOLD, 15));
+        table.getTableHeader().setBackground(new Color(103, 3, 173));
+        table.getTableHeader().setForeground(Color.WHITE);
         
+        JScrollPane scrollPane = new JScrollPane(table);
+        
+        contentPanel.add(scrollPane, BorderLayout.CENTER);
+        
+        add(contentPanel, BorderLayout.CENTER);
+
         Show.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent a) {
-                String u = textField.getText();
+                String u = textField.getText().trim();
                 
                 if (u.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Vui lòng nhập Username.", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
@@ -108,15 +92,21 @@ public class CheckPaymentDetails extends JFrame {
                 try {
                     o = new ConnectionClass(DB_USER, DB_PASS);
                     
-                    String s = "SELECT tid, price, journey_date, journey_time, username, statuss " +
-                               "FROM bookedFlight WHERE username = ? AND statuss = 'success'";
+                    String s = "SELECT tid AS 'Mã Vé', price AS 'Giá', journey_date AS 'Ngày Đi', journey_time AS 'Giờ Đi', username AS 'Username', statuss AS 'Trạng Thái' " +
+                                     "FROM bookedFlight WHERE username = ? AND statuss = 'Success'";
                     
                     pst = o.con.prepareStatement(s);
                     pst.setString(1, u);
                     rs = pst.executeQuery();
                     
+                    if (!rs.isBeforeFirst()) { 
+                        JOptionPane.showMessageDialog(null, "Không tìm thấy chi tiết thanh toán thành công cho Username này.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                        table.setModel(DbUtils.resultSetToTableModel(rs));
+                        return;
+                    }
+                    
                     table.setModel(DbUtils.resultSetToTableModel(rs));
-                    table.setFont(new Font("Arial", Font.BOLD, 14));
+                    fixColumnWidths(); 
                     
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -130,6 +120,17 @@ public class CheckPaymentDetails extends JFrame {
         setVisible(true);
     }
     
+    private void fixColumnWidths() {
+        if (table.getModel().getColumnCount() >= 6) {
+            table.getColumnModel().getColumn(0).setPreferredWidth(100);
+            table.getColumnModel().getColumn(1).setPreferredWidth(80);
+            table.getColumnModel().getColumn(2).setPreferredWidth(120);
+            table.getColumnModel().getColumn(3).setPreferredWidth(100);
+            table.getColumnModel().getColumn(4).setPreferredWidth(120);
+            table.getColumnModel().getColumn(5).setPreferredWidth(100);
+        }
+    }
+
     private void closeResources(ResultSet rs, ConnectionClass obj, PreparedStatement pst) {
         try {
             if (rs != null) rs.close();
@@ -142,13 +143,15 @@ public class CheckPaymentDetails extends JFrame {
             e.printStackTrace();
         }
         try {
-            if (obj != null && obj.con != null) obj.con.close();
+            if (obj != null && obj.con != null) {
+                obj.con.close(); 
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-//    public static void main(String[] args) {
-//        new CheckPaymentDetails();
-//    }
+    public static void main(String[] args) {
+        new CheckPaymentDetails();
+    }
 }

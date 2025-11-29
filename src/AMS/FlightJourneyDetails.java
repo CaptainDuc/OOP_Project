@@ -7,8 +7,8 @@ import java.sql.*;
 public class FlightJourneyDetails extends JFrame {
 
     JTable t;
-    String x[] = {"Source", "Destination", "Class", "Price", "Flight Code", "Flight Name", "Journey Date", "Journey Time"};
-    String y[][] = new String[20][8]; 
+    String x[] = {"Điểm Đi", "Điểm Đến", "Hạng", "Giá", "Mã Chuyến Bay", "Tên Hãng", "Ngày Đi", "Giờ Đi"}; 
+    String y[][] = new String[20][8];
     int i = 0, j = 0;
     Font f;
     
@@ -16,10 +16,26 @@ public class FlightJourneyDetails extends JFrame {
     private static final String DB_PASS = "123456"; 
 
     FlightJourneyDetails(String src, String dst) {
-        super("Flight Journey Details");
-        setSize(1300, 400);
-        setLocation(0, 10);
-        f = new Font("Arial", Font.BOLD, 17);
+        super("Chi Tiết Hành Trình Bay");
+        setSize(1300, 450);
+        setLocationRelativeTo(null);
+        
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
+        
+        f = new Font("Arial", Font.PLAIN, 16);
+        getContentPane().setLayout(new BorderLayout());
+        getContentPane().setBackground(Color.WHITE);
+
+        JLabel headerLabel = new JLabel("KẾT QUẢ TÌM KIẾM CHUYẾN BAY TỪ " + src.toUpperCase() + " ĐẾN " + dst.toUpperCase());
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 22));
+        headerLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        headerLabel.setForeground(new Color(103, 3, 173));
+
+        JPanel headerPanel = new JPanel();
+        headerPanel.setBackground(new Color(240, 240, 240));
+        headerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        headerPanel.add(headerLabel);
+        add(headerPanel, BorderLayout.NORTH);
 
         ConnectionClass o = null;
         PreparedStatement pst = null;
@@ -55,20 +71,27 @@ public class FlightJourneyDetails extends JFrame {
             
             t = new JTable(y, x);
             t.setFont(f);
-            t.setBackground(Color.BLACK);
-            t.setForeground(Color.WHITE);
+            
             t.setRowHeight(30);
+            t.getTableHeader().setFont(new Font("Arial", Font.BOLD, 17));
+            t.getTableHeader().setBackground(new Color(230, 2, 10));
+            t.getTableHeader().setForeground(Color.WHITE);
+            t.setGridColor(new Color(200, 200, 200));
+            t.setBackground(Color.WHITE);
+            t.setForeground(Color.BLACK);
+
 
         } catch (Exception ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Lỗi truy vấn chuyến bay: " + ex.getMessage(), "Lỗi CSDL", JOptionPane.ERROR_MESSAGE);
-            t = new JTable(y, x);
+            t = new JTable(y, x); 
         } finally {
             closeResources(rs, o, pst);
         }
 
         JScrollPane js = new JScrollPane(t);
-        add(js);
+        add(js, BorderLayout.CENTER);
+        
         setVisible(true);
     }
     
@@ -91,6 +114,6 @@ public class FlightJourneyDetails extends JFrame {
     }
 
     public static void main(String[] args) {
-        new FlightJourneyDetails("HANOI", "DUBAI").setVisible(true);
+        new FlightJourneyDetails("HANOI", "DUBAI");
     }
 }

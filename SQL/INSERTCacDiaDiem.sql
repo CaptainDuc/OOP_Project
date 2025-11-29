@@ -1,4 +1,4 @@
-INSERT INTO flight (fcode, fname, sourcee, destination, classname, price, journey_date, journey_time) 
+﻿INSERT INTO flight (fcode, fname, sourcee, destination, classname, price, journey_date, journey_time) 
 VALUES 
 -- HCM -> SINGAPORE
 ('SQ178', 'Singapore Airlines', 'HCM', 'Singapore', 'Business', 11500000.00, '2026-03-05', '14:00:00'),
@@ -50,4 +50,16 @@ VALUES
 
 -- HCM -> CHICAGO
 ('NH12', 'ANA', 'HCM', 'Chicago', 'Business', 36000000.00, '2026-06-20', '22:00:00'),
-('NH12', 'ANA', 'HCM', 'Chicago', 'Economy', 19000000.00, '2026-06-20', '22:00:00');
+('NH12', 'ANA', 'HCM', 'Chicago', 'Economy', 19000000.00, '2026-06-20', '22:00:00'),
+
+-- 6. HA NOI -> BANGKOK (Chuyến thứ 6)
+('TG564', 'Thai Airways', 'Ha Noi', 'Bangkok', 'Business', 7800000.00, '2026-07-05', '18:15:00'),
+('TG564', 'Thai Airways', 'Ha Noi', 'Bangkok', 'Economy', 4500000.00, '2026-07-05', '18:15:00'),
+
+-- 7. HA NOI -> KUALA LUMPUR (Chuyến thứ 7)
+('MH753', 'Malaysia Airlines', 'Ha Noi', 'Kuala Lumpur', 'Business', 8500000.00, '2026-07-15', '13:00:00'),
+('MH753', 'Malaysia Airlines', 'Ha Noi', 'Kuala Lumpur', 'Economy', 5200000.00, '2026-07-15', '13:00:00'),
+
+-- 8. HA NOI -> SYDNEY (Chuyến thứ 8)
+('VN773', 'Vietnam Airlines', 'Ha Noi', 'Sydney', 'Business', 20000000.00, '2026-07-25', '20:30:00'),
+('VN773', 'Vietnam Airlines', 'Ha Noi', 'Sydney', 'Economy', 12000000.00, '2026-07-25', '20:30:00');

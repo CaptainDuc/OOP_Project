@@ -4,16 +4,21 @@ import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
 import java.sql.*;
+import java.sql.SQLIntegrityConstraintViolationException;
+
 public class Login extends JFrame implements ActionListener{
     JLabel l1, l2, l3,l4;
     JButton bt1, bt2;
     JPasswordField pf;
     JTextField tf;
     JFrame f;
+    
     public Login(){
         f = new JFrame("Login Account");
         f.setBackground(Color.WHITE);
         f.setLayout(null);
+        
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         l1 = new JLabel();
         l1.setBounds(0,0,580,350);
@@ -71,6 +76,24 @@ public class Login extends JFrame implements ActionListener{
         f.setSize(580,350);
         f.setLocation(300,100);
     }
+
+    private void closeResources(ResultSet rs, PreparedStatement pst, ConnectionClass obj) {
+        try {
+            if (rs != null) rs.close();
+        } catch (SQLException closeEx) {
+            closeEx.printStackTrace();
+        }
+        try {
+            if (pst != null) pst.close();
+        } catch (SQLException closeEx) {
+            closeEx.printStackTrace();
+        }
+        try {
+            if (obj != null && obj.con != null) obj.con.close();
+        } catch (SQLException closeEx) {
+            closeEx.printStackTrace();
+        }
+    }
  
     public void actionPerformed(ActionEvent e) {
     ConnectionClass obj = null; 
@@ -80,6 +103,12 @@ public class Login extends JFrame implements ActionListener{
     if(e.getSource() == bt1){
         String username = tf.getText();
         String pass = new String(pf.getPassword());
+        
+        if (username.isEmpty() || pass.isEmpty()) {
+             JOptionPane.showMessageDialog(f, "Vui lòng nhập Tên đăng nhập và Mật khẩu.", "Thiếu thông tin", JOptionPane.WARNING_MESSAGE);
+             return;
+        }
+
         try{
             obj = new ConnectionClass("sa", "123456"); 
             
@@ -97,32 +126,40 @@ public class Login extends JFrame implements ActionListener{
             
             if (rs.next()){
                 String usernamee = tf.getText();
-                new HomePage(usernamee).setVisible(true);
+                new HomePage(usernamee).setVisible(true); 
                 f.setVisible(false);
             } else {
-                JOptionPane.showMessageDialog(null,"Bạn đã nhập sai");
+                JOptionPane.showMessageDialog(f,"Sai tên đăng nhập hoặc mật khẩu. Vui lòng thử lại.");
             }
             
         } catch(Exception ex){
             ex.printStackTrace();
             JOptionPane.showMessageDialog(f, "Lỗi đăng nhập: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
         } finally {
-             // Đóng tài nguyên sau khi sử dụng
-            try {
-                if (rs != null) rs.close();
-                if (pst != null) pst.close();
-                if (obj != null && obj.con != null) obj.con.close();
-            } catch (SQLException closeEx) {
-                closeEx.printStackTrace();
-            }
+            closeResources(rs, pst, obj);
         }
     }
 
     if(e.getSource() == bt2){
-        String username = tf.getText();           
-        String name = JOptionPane.showInputDialog(f, "Enter your name:");  
+        String username = tf.getText();
         String pass = new String(pf.getPassword());
-        String phone = JOptionPane.showInputDialog(f, "Enter your phone:");  
+        
+        if (username.isEmpty() || pass.isEmpty()) {
+             JOptionPane.showMessageDialog(f, "Vui lòng nhập tên đăng nhập và mật khẩu vào trường trước khi Đăng ký.", "Thiếu thông tin", JOptionPane.WARNING_MESSAGE);
+             return;
+        }
+
+        String name = JOptionPane.showInputDialog(f, "Nhập họ và tên:"); 
+        if (name == null || name.trim().isEmpty()) {
+             JOptionPane.showMessageDialog(f, "Tên không được để trống.", "Thiếu thông tin", JOptionPane.WARNING_MESSAGE);
+             return;
+        }
+        
+        String phone = JOptionPane.showInputDialog(f, "Nhập số điện thoại:"); 
+        if (phone == null || phone.trim().isEmpty()) {
+             JOptionPane.showMessageDialog(f, "Số điện thoại không được để trống.", "Thiếu thông tin", JOptionPane.WARNING_MESSAGE);
+             return;
+        }
 
         try{
             obj = new ConnectionClass("sa", "123456");
@@ -147,16 +184,13 @@ public class Login extends JFrame implements ActionListener{
                 JOptionPane.showMessageDialog(f, "Đăng ký thất bại!");
             }
 
+        } catch(SQLIntegrityConstraintViolationException ex) {
+             JOptionPane.showMessageDialog(f, "Tên đăng nhập đã tồn tại. Vui lòng chọn tên khác.", "Lỗi Đăng ký", JOptionPane.ERROR_MESSAGE);
         } catch(Exception ex){
             ex.printStackTrace();
             JOptionPane.showMessageDialog(f, "Lỗi khi đăng ký: "+ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
         } finally {
-            try {
-                if (pst != null) pst.close();
-                if (obj != null && obj.con != null) obj.con.close();
-            } catch (SQLException closeEx) {
-                closeEx.printStackTrace();
-            }
+            closeResources(null, pst, obj);
         }
     }
 }
