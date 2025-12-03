@@ -118,7 +118,7 @@ public class HomePage extends JFrame implements ActionListener{
         String cmd =e.getActionCommand();
         
         if (cmd.equals("Thêm Hồ sơ")){
-             new AddPassengerDetails();
+             new AddPassengerDetails(currentUsername);
         }
         else if(cmd.equals("Xem Hồ sơ")){
              new ViewPassenger().setVisible(true);
@@ -156,6 +156,6 @@ public class HomePage extends JFrame implements ActionListener{
     }
     
     public static void main(String[]args){
-        SwingUtilities.invokeLater(() -> new HomePage("User").setVisible(true));
+        SwingUtilities.invokeLater(() -> new HomePage("duc").setVisible(true));
     }
 }

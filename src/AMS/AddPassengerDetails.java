@@ -18,11 +18,13 @@ public class AddPassengerDetails extends JFrame implements ActionListener {
     private static final int FIELD_WIDTH = 200;
     private static final int FIELD_HEIGHT = 30;
     private static final String DATE_FORMAT = "dd-MM-yyyy";
+    private String currentUsername;
 
-    public AddPassengerDetails() {
+    public AddPassengerDetails(String username) {
+        this.currentUsername = username;
         f = new JFrame("Thêm Chi Tiết Hành Khách");
         f.setLayout(new BorderLayout(10, 10));
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         
         // --- 1.Tiêu đề ---
         JLabel lbTitle = new JLabel("THÊM CHI TIẾT HÀNH KHÁCH MỚI", SwingConstants.CENTER);
@@ -51,6 +53,9 @@ public class AddPassengerDetails extends JFrame implements ActionListener {
         tfGender = new JTextField(15);
         tfPassport = new JTextField(15);
         
+        tfUsername.setText(this.currentUsername);
+        tfUsername.setEditable(false);
+        tfUsername.setBackground(Color.decode("#EEEEEE"));
         // --- Thêm các Label và Field vào FormPanel ---
         
         // Cột 1
@@ -216,7 +221,6 @@ public class AddPassengerDetails extends JFrame implements ActionListener {
     }
     
     private void clearForm() {
-        tfUsername.setText("");
         tfName.setText("");
         tfAge.setText("");
         tfDOB.setText("");
@@ -228,6 +232,6 @@ public class AddPassengerDetails extends JFrame implements ActionListener {
         tfPassport.setText("");
     }
     public static void main(String[] args) {
-        new AddPassengerDetails();
+        new AddPassengerDetails("duc");
     }
 }
