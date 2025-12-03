@@ -192,7 +192,6 @@ public class AddPassengerDetails extends JFrame implements ActionListener {
 
             if (rowsAffected > 0) {
                 JOptionPane.showMessageDialog(null, "Thêm chi tiết hành khách thành công!");
-                // Xóa form sau khi lưu thành công
                 clearForm();
             } else {
                 JOptionPane.showMessageDialog(null, "Thêm chi tiết hành khách thất bại");

@@ -68,6 +68,10 @@ public class FlightJourneyDetails extends JFrame {
                 i++;
                 j = 0;
             }
+            if (i == 0) {
+                 JOptionPane.showMessageDialog(this, "Không tìm thấy chuyến bay nào từ " + src + " đến " + dst + " khớp với yêu cầu.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                 y = new String[0][8]; 
+            }
             
             t = new JTable(y, x);
             t.setFont(f);
@@ -114,6 +118,6 @@ public class FlightJourneyDetails extends JFrame {
     }
 
     public static void main(String[] args) {
-        new FlightJourneyDetails("HANOI", "DUBAI");
+        new FlightJourneyDetails("HA NOI", "BANGKOK");
     }
 }

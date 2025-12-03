@@ -92,8 +92,11 @@ public class CheckPaymentDetails extends JFrame {
                 try {
                     o = new ConnectionClass(DB_USER, DB_PASS);
                     
-                    String s = "SELECT tid AS 'Mã Vé', price AS 'Giá', journey_date AS 'Ngày Đi', journey_time AS 'Giờ Đi', username AS 'Username', statuss AS 'Trạng Thái' " +
-                                     "FROM bookedFlight WHERE username = ? AND statuss = 'Success'";
+                    String s = "SELECT t1.tid AS 'Mã Vé', t3.price AS 'Giá', t1.journey_date AS 'Ngày Đi', t1.journey_time AS 'Giờ Đi', t2.username AS 'Username', t1.statuss AS 'Trạng Thái' " +
+                                "FROM bookedFlight t1 " +
+                                "JOIN passenger t2 ON t1.passenger_passport = t2.passport " +
+                                "JOIN flight t3 ON t1.fcode = t3.fcode AND t1.classname = t3.classname AND t1.journey_date = t3.journey_date AND t1.journey_time = t3.journey_time " +
+                                "WHERE t2.username = ? AND t1.statuss = 'success'";
                     
                     pst = o.con.prepareStatement(s);
                     pst.setString(1, u);

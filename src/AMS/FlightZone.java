@@ -89,10 +89,13 @@ public class FlightZone extends JFrame {
         // Data Loading & Event Handling
         
         ConnectionClass o = null;
+        PreparedStatement pst = null;
         ResultSet r = null;
         try {
             o = new ConnectionClass(DB_USER, DB_PASS);
             String s = "SELECT DISTINCT fcode FROM flight";
+            
+            pst = o.con.prepareStatement(s);
             r = o.stm.executeQuery(s);
             while (r.next()) {
                 c1.add(r.getString("fcode"));

@@ -139,10 +139,13 @@ public class UpdatePassenger extends JFrame implements ActionListener {
     
     private void loadUsernames() {
         ConnectionClass o = null;
+        PreparedStatement pst = null;
         ResultSet r = null;
         try {
             o = new ConnectionClass(DB_USER, DB_PASS);
             String q = "SELECT username FROM passenger";
+            
+            pst = o.con.prepareStatement(q);
             r = o.stm.executeQuery(q);
             while (r.next()) {
                 c.add(r.getString("username"));

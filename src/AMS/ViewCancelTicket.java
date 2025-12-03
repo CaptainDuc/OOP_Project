@@ -47,8 +47,15 @@ public class ViewCancelTicket extends JFrame {
         try {
             obj = new ConnectionClass(DB_USER, DB_PASS);
 
-            String q = "SELECT tid as 'Mã Vé', sourcee as 'Nơi Đi', destination as 'Nơi Đến', classname as 'Hạng Vé', price as 'Giá Vé', fcode as 'Mã Chuyến', fname as 'Tên Hãng', journey_date as 'Ngày Đi', journey_time as 'Giờ Đi', username as 'Username', namee as 'Họ Tên Khách', reason as 'Lý Do Hủy' "
-                    + "FROM cancelFlight WHERE username = ?";
+            String q = "SELECT " +
+                       "  t1.tid AS 'Mã Vé', t3.sourcee AS 'Nơi Đi', t3.destination AS 'Nơi Đến', t3.classname AS 'Hạng Vé', t3.price AS 'Giá Vé', " +
+                       "  t1.fcode AS 'Mã Chuyến', t3.fname AS 'Tên Hãng', t1.journey_date AS 'Ngày Đi', t1.journey_time AS 'Giờ Đi', " +
+                       "  t2.username AS 'Username', t2.namee AS 'Họ Tên Khách', t1.reason AS 'Lý Do Hủy' " +
+                       "FROM cancelFlight t1 " +
+                       "JOIN passenger t2 ON t1.passenger_passport = t2.passport " +
+                       "JOIN flight t3 ON t1.fcode = t3.fcode AND t1.journey_date = t3.journey_date AND t1.journey_time = t3.journey_time AND t1.classname = t3.classname " +
+                       "WHERE t2.username = ?";
+            
             pst = obj.con.prepareStatement(q);
             pst.setString(1, username);
             rs = pst.executeQuery();
@@ -113,6 +120,6 @@ public class ViewCancelTicket extends JFrame {
     }
 
     public static void main(String[] args) {
-        new ViewCancelTicket("UserEx").setVisible(true);
+        new ViewCancelTicket("duc").setVisible(true);
     }
 }

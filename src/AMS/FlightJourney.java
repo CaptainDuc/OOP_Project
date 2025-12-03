@@ -104,10 +104,12 @@ public class FlightJourney extends JFrame implements ActionListener {
     
     private void loadSourceData() {
         ConnectionClass obj = null;
+        PreparedStatement pst = null;
         ResultSet rs = null;
         try {
             obj = new ConnectionClass(DB_USER, DB_PASS);
             String q = "SELECT DISTINCT sourcee FROM flight";
+            pst = obj.con.prepareStatement(q);
             rs = obj.stm.executeQuery(q);
             while (rs.next()) {
                 c1.add(rs.getString("sourcee"));

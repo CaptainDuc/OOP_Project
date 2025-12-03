@@ -13,8 +13,9 @@ public class BookFlight extends JFrame implements ActionListener {
     JTextField tf1, tf2, tf3, tf4, tf5, tf6, tf7; 
     Font f, f1;
     Choice c1, c3, c6; 
-    Choice c2; // Username
+    Choice c2;
     private String currentUsername;
+    private String passengerPassport;
     
     private static final String DB_USER = "sa"; 
     private static final String DB_PASS = "123456"; 
@@ -57,15 +58,17 @@ public class BookFlight extends JFrame implements ActionListener {
         try {
             obj = new ConnectionClass(DB_USER, DB_PASS);
             
-            String q = "SELECT namee FROM passenger WHERE username=?";
+            String q = "SELECT namee, passport FROM passenger WHERE username=?";
             PreparedStatement pst = obj.con.prepareStatement(q);
             pst.setString(1, this.currentUsername);
             r = pst.executeQuery();
             
             if (r.next()) {
                 tf5 = new JTextField(r.getString("namee"));
+                this.passengerPassport = r.getString("passport");
             } else {
                 tf5 = new JTextField("Name Not Found");
+                this.passengerPassport = null;
             }
             pst.close();
         } catch (Exception ex) {
@@ -354,10 +357,8 @@ public class BookFlight extends JFrame implements ActionListener {
             String source = c1.getSelectedItem();
             String destination = c6.getSelectedItem();
             String classname = c3.getSelectedItem();
-            
             String price = tf6.getText(); 
-            String fcode = tf7.getText(); 
-            
+            String fcode = tf7.getText();
             String fname = tf2.getText();
             String journey_date = tf3.getText();
             String journey_time = tf4.getText();
@@ -365,6 +366,10 @@ public class BookFlight extends JFrame implements ActionListener {
             String name = tf5.getText();
             String status = "Success";
 
+            if (this.passengerPassport == null || this.passengerPassport.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Không thể xác định Passport hành khách. Vui lòng kiểm tra lại thông tin đăng nhập.");
+                return;
+            }
             if (source == null || destination == null || classname == null || 
                 source.isEmpty() || destination.isEmpty() || classname.isEmpty() || 
                 price.isEmpty() || price.equals("N/A") || fcode.isEmpty() || fcode.equals("N/A") ||
@@ -379,22 +384,15 @@ public class BookFlight extends JFrame implements ActionListener {
             try {
                 obj = new ConnectionClass(DB_USER, DB_PASS);
                 
-                String q1 = "INSERT INTO bookedFlight (tid, sourcee, destination, classname, price, fcode, fname, journey_date, journey_time, username, namee, statuss) "
-                        + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                
+                String q1 = "INSERT INTO bookedFlight (tid, fcode, classname, journey_date, journey_time, passenger_passport, statuss) "+ "VALUES (?, ?, ?, ?, ?, ?, ?)";
                 pst = obj.con.prepareStatement(q1);
                 pst.setString(1, tid);
-                pst.setString(2, source);
-                pst.setString(3, destination);
-                pst.setString(4, classname);
-                pst.setString(5, price);
-                pst.setString(6, fcode);
-                pst.setString(7, fname);
-                pst.setString(8, journey_date);
-                pst.setString(9, journey_time);
-                pst.setString(10, username);
-                pst.setString(11, name);
-                pst.setString(12, status);
+                pst.setString(2, fcode);
+                pst.setString(3, classname);
+                pst.setString(4, journey_date);
+                pst.setString(5, journey_time);
+                pst.setString(6, this.passengerPassport);
+                pst.setString(7, status);
 
                 int a = pst.executeUpdate();
                 
@@ -419,6 +417,6 @@ public class BookFlight extends JFrame implements ActionListener {
     }
 
     public static void main(String[] args) {
-        new BookFlight("UserEx").setVisible(true);
+        new BookFlight("duc").setVisible(true);
     }
 }

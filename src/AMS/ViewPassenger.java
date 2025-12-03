@@ -42,13 +42,15 @@ public class ViewPassenger extends JFrame {
 
         
         ConnectionClass obj = null;
+        PreparedStatement pst = null;
         ResultSet rs = null;
 
         try {
             obj = new ConnectionClass(DB_USER, DB_PASS);
-            // Giữ nguyên câu truy vấn gốc (Dùng Alias tiếng Anh)
             String g = "SELECT username as Username, namee as Name, age as Age, dob as [Date of Birth], addresss as Address, phone as Phone, email as Email, nationality as Nationality, gender as Gender, passport as Passport FROM passenger";
-            rs = obj.stm.executeQuery(g);
+            
+            pst = obj.con.prepareStatement(g);
+            rs = pst.executeQuery();
             
             while (rs.next()) {
                 if (i >= 20) break;
@@ -74,7 +76,7 @@ public class ViewPassenger extends JFrame {
             JOptionPane.showMessageDialog(this, "Lỗi truy vấn chi tiết hành khách: " + ex.getMessage(), "Lỗi CSDL", JOptionPane.ERROR_MESSAGE);
             t = new JTable(new String[0][x.length], x);
         } finally {
-            closeResources(rs, obj);
+            closeResources(rs, obj, pst);
         }
 
         if (t != null) {
@@ -103,19 +105,24 @@ public class ViewPassenger extends JFrame {
         
         int totalColumns = table.getColumnModel().getColumnCount();
         
-        int[] widths = {120, 150, 60, 100, 150, 100, 150, 100, 80}; 
+        int[] widths = {120, 150, 60, 100, 150, 100, 150, 100, 80, 120}; 
         
         if (totalColumns == 10) { 
-            for (int k = 0; k < 9; k++) { 
+            for (int k = 0; k < 10; k++) { 
                 table.getColumnModel().getColumn(k).setPreferredWidth(widths[k]);
             }
         }
     }
 
 
-    private void closeResources(ResultSet rs, ConnectionClass obj) {
+    private void closeResources(ResultSet rs, ConnectionClass obj, PreparedStatement pst) {
         try {
             if (rs != null) rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            if (pst != null) pst.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

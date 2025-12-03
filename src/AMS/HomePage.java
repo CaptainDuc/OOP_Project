@@ -156,6 +156,6 @@ public class HomePage extends JFrame implements ActionListener{
     }
     
     public static void main(String[]args){
-        SwingUtilities.invokeLater(() -> new HomePage("UserEx").setVisible(true));
+        SwingUtilities.invokeLater(() -> new HomePage("User").setVisible(true));
     }
 }

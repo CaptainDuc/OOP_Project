@@ -50,8 +50,15 @@ public class ViewBookedFlight extends JFrame {
         try {
             obj = new ConnectionClass(DB_USER, DB_PASS);
 
-            String q = "SELECT tid as [Ticket ID], sourcee as Source, destination as Destination, classname as [Class Name], price as Price, fcode as [Flight Code], fname as [Flight Name], journey_date as [Journey Date], journey_time as [Journey Time], username as [Username], namee as Name, statuss as Status "
-                    + "FROM bookedFlight WHERE username = ?";
+            String q = "SELECT " +
+                       "  t1.tid AS [Ticket ID], t3.sourcee AS Source, t3.destination AS Destination, t3.classname AS [Class Name], t3.price AS Price, " +
+                       "  t1.fcode AS [Flight Code], t3.fname AS [Flight Name], t1.journey_date AS [Journey Date], t1.journey_time AS [Journey Time], " +
+                       "  t2.username AS Username, t2.namee AS Name, t1.statuss AS Status " +
+                       "FROM bookedFlight t1 " +
+                       "JOIN passenger t2 ON t1.passenger_passport = t2.passport " +
+                       "JOIN flight t3 ON t1.fcode = t3.fcode AND t1.journey_date = t3.journey_date AND t1.journey_time = t3.journey_time AND t1.classname = t3.classname " +
+                       "WHERE t2.username = ?";
+            
             pst = obj.con.prepareStatement(q);
             pst.setString(1, username);
             rs = pst.executeQuery();
@@ -138,6 +145,6 @@ public class ViewBookedFlight extends JFrame {
     }
 
     public static void main(String[] args) {
-        new ViewBookedFlight("UserEx").setVisible(true); 
+        new ViewBookedFlight("duc").setVisible(true); 
     }
 }

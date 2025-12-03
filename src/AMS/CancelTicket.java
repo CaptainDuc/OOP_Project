@@ -41,10 +41,12 @@ public class CancelTicket extends JFrame implements ActionListener {
         try {
             o = new ConnectionClass(DB_USER, DB_PASS);
             
-            String q = "SELECT DISTINCT tid FROM bookedflight WHERE statuss = 'success' AND username = ?";
-            PreparedStatement pst = o.con.prepareStatement(q);
-            pst.setString(1, currentUsername);
-            r = pst.executeQuery();
+                String q = "SELECT DISTINCT t1.tid FROM bookedflight t1 " +
+               "JOIN passenger t2 ON t1.passenger_passport = t2.passport " +
+               "WHERE t1.statuss = 'success' AND t2.username = ?"; 
+                PreparedStatement pst = o.con.prepareStatement(q);
+                pst.setString(1, currentUsername);
+                r = pst.executeQuery();
             
             while (r.next()) {
                 c1.add(r.getString("tid"));
@@ -171,7 +173,14 @@ public class CancelTicket extends JFrame implements ActionListener {
             o = new ConnectionClass(DB_USER, DB_PASS);
             String tid = c1.getSelectedItem();
             
-            String q = "SELECT * FROM bookedflight WHERE tid = ?";
+            String q = "SELECT " +
+                        "t1.fcode, t1.classname, t1.journey_date, t1.journey_time, t1.passenger_passport, " +
+                        "t2.sourcee, t2.destination, t2.price, t2.fname, " +
+                        "t3.username, t3.namee " +
+                        "FROM bookedFlight t1 " +
+                        "JOIN flight t2 ON t1.fcode = t2.fcode AND t1.classname = t2.classname AND t1.journey_date = t2.journey_date AND t1.journey_time = t2.journey_time " +
+                        "JOIN passenger t3 ON t1.passenger_passport = t3.passport " +
+                        "WHERE t1.tid = ?";
             pst = o.con.prepareStatement(q);
             pst.setString(1, tid);
             rs = pst.executeQuery();
@@ -188,7 +197,12 @@ public class CancelTicket extends JFrame implements ActionListener {
                 tf9.setText(rs.getString("username"));
                 tf10.setText(rs.getString("namee"));
             }
-        } catch (Exception ex) {
+            
+            else {
+            tf1.setText(""); tf2.setText(""); tf3.setText(""); tf4.setText(""); tf5.setText("");
+            tf6.setText(""); tf7.setText(""); tf8.setText(""); tf9.setText(""); tf10.setText("");
+            }
+        }catch (Exception ex) {
             ex.printStackTrace();
         } finally {
             closeResources(rs, o, pst);
@@ -241,25 +255,37 @@ public class CancelTicket extends JFrame implements ActionListener {
             String journey_date = tf7.getText();
             String journey_time = tf8.getText();
             String namee = tf10.getText();
-
+            String passenger_passport = null; 
+            ResultSet rsPassport = null;
             try {
                 o = new ConnectionClass(DB_USER, DB_PASS);
                 o.con.setAutoCommit(false);
 
-                String q1 = "INSERT INTO cancelFlight (tid, sourcee, destination, classname, price, fcode, fname, journey_date, journey_time, username, namee, reason) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                pst1 = o.con.prepareStatement(q1);
+                String qPassport = "SELECT fcode, classname, journey_date, journey_time, passenger_passport FROM bookedFlight WHERE tid = ?";
+                PreparedStatement pstPassport = o.con.prepareStatement(qPassport);
+                pstPassport.setString(1, tid);
+                rsPassport = pstPassport.executeQuery();
+
+                if (rsPassport.next()) {
+                    fcode = rsPassport.getString("fcode");
+                    class_name = rsPassport.getString("classname");
+                    journey_date = rsPassport.getString("journey_date");
+                    journey_time = rsPassport.getString("journey_time");
+                    passenger_passport = rsPassport.getString("passenger_passport");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Không tìm thấy chi tiết vé để hủy.", "Lỗi Dữ Liệu", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                pstPassport.close();
+                
+                String q1 = "INSERT INTO cancelFlight (tid, fcode, classname, journey_date, journey_time, passenger_passport, reason) VALUES(?, ?, ?, ?, ?, ?, ?)";                pst1 = o.con.prepareStatement(q1);
                 pst1.setString(1, tid);
-                pst1.setString(2, sourcee);
-                pst1.setString(3, destination);
-                pst1.setString(4, class_name);
-                pst1.setString(5, price);
-                pst1.setString(6, fcode);
-                pst1.setString(7, fname);
-                pst1.setString(8, journey_date);
-                pst1.setString(9, journey_time);
-                pst1.setString(10, username);
-                pst1.setString(11, namee);
-                pst1.setString(12, reason);
+                pst1.setString(2, fcode);
+                pst1.setString(3, class_name);
+                pst1.setString(4, journey_date);
+                pst1.setString(5, journey_time);
+                pst1.setString(6, passenger_passport);
+                pst1.setString(7, reason);
                 
                 int insertCount = pst1.executeUpdate();
                 
@@ -312,6 +338,6 @@ public class CancelTicket extends JFrame implements ActionListener {
     }
 
     public static void main(String[] args) {
-        new CancelTicket("UserEx").setVisible(true);
+        new CancelTicket("duc").setVisible(true);
     }
 }

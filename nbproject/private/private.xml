@@ -4,17 +4,14 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Study/Netbeans%20Project/DoAnJava/src/AMS/ViewPassenger.java</file>
-            <file>file:/C:/Study/Netbeans%20Project/DoAnJava/src/AMS/HomePage.java</file>
             <file>file:/C:/Study/Netbeans%20Project/DoAnJava/src/AMS/ViewBookedFlight.java</file>
-            <file>file:/C:/Study/Netbeans%20Project/DoAnJava/src/AMS/CheckPaymentDetails.java</file>
-            <file>file:/C:/Study/Netbeans%20Project/DoAnJava/src/AMS/UpdatePassenger.java</file>
+            <file>file:/C:/Study/Netbeans%20Project/DoAnJava/src/AMS/HomePage.java</file>
             <file>file:/C:/Study/Netbeans%20Project/DoAnJava/src/AMS/FlightJourneyDetails.java</file>
+            <file>file:/C:/Study/Netbeans%20Project/DoAnJava/src/AMS/UpdatePassenger.java</file>
             <file>file:/C:/Study/Netbeans%20Project/DoAnJava/src/AMS/ViewCancelTicket.java</file>
-            <file>file:/C:/Study/Netbeans%20Project/DoAnJava/src/AMS/CancelTicket.java</file>
             <file>file:/C:/Study/Netbeans%20Project/DoAnJava/src/AMS/FlightJourney.java</file>
-            <file>file:/C:/Study/Netbeans%20Project/DoAnJava/src/AMS/ConnectionClass.java</file>
-            <file>file:/C:/Study/Netbeans%20Project/DoAnJava/src/AMS/FlightZone.java</file>
             <file>file:/C:/Study/Netbeans%20Project/DoAnJava/src/AMS/Login.java</file>
+            <file>file:/C:/Study/Netbeans%20Project/DoAnJava/src/AMS/FlightZone.java</file>
         </group>
     </open-files>
 </project-private>
